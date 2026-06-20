@@ -1,0 +1,29 @@
+{{template "page_start" .}}
+<section class="search-panel">
+  <form class="search-form" action="/" method="get">
+    <label for="q">Search jobs</label>
+    <div class="search-row">
+      <input id="q" name="q" value="{{.Query}}" placeholder="{{.SearchHint}}" autofocus>
+      <button type="submit">Search</button>
+    </div>
+  </form>
+  <div class="term-cloud">
+    {{range .TopTerms}}
+      <a href="/?q={{.Term}}">{{.Label}} <span>{{.Count}}</span></a>
+    {{end}}
+  </div>
+</section>
+
+<section class="results-header">
+  <h1>{{.Count}} matching jobs</h1>
+  {{if .Query}}<p>Query: <strong>{{.Query}}</strong></p>{{else}}<p>Showing all current listings.</p>{{end}}
+</section>
+
+<section class="results-list">
+  {{range .Results}}
+    {{template "job_card" .}}
+  {{else}}
+    <p class="empty">No jobs matched this query.</p>
+  {{end}}
+</section>
+{{template "page_end" .}}

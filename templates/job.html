@@ -1,0 +1,38 @@
+{{template "page_start" .}}
+<article class="job-detail">
+  <nav class="back"><a href="/">Back to search</a></nav>
+
+  <header class="job-heading">
+    <p class="eyebrow">{{.Document.Job.Department}}</p>
+    <h1>{{.Document.Job.Title}}</h1>
+    <div class="meta-grid">
+      <span>{{.Document.Job.Location}}</span>
+      <span>{{.Document.Job.Employment}}</span>
+      <span>{{.Document.Job.Experience}}</span>
+      <span>{{date .Document.Job.ReleasedDate}}</span>
+      <span>{{.Document.Job.RefNumber}}</span>
+      {{if .Document.Job.SalaryMin}}<span>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</span>{{end}}
+    </div>
+    <p class="actions">
+      <a class="button" href="{{.Document.Job.ApplyURL}}">Apply</a>
+      <a class="button secondary" href="{{.Document.Job.PostingURL}}">Original listing</a>
+    </p>
+  </header>
+
+  <section class="matched-tags">
+    <h2>Parsed Signals</h2>
+    <div class="tags">
+      {{range .Document.ConceptNames}}<span>{{.}}</span>{{else}}<span>No taxonomy matches yet</span>{{end}}
+    </div>
+  </section>
+
+  {{range .Document.Job.Sections}}
+    {{if .Text}}
+      <section class="job-section">
+        <h2>{{.Title}}</h2>
+        <pre>{{.Text}}</pre>
+      </section>
+    {{end}}
+  {{end}}
+</article>
+{{template "page_end" .}}

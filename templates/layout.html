@@ -1,0 +1,22 @@
+{{define "page_start"}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.PageTitle}}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">SF Jobs Index</a>
+    <span class="topbar-meta">Parsed public job listings</span>
+  </header>
+  <main>
+{{end}}
+
+{{define "page_end"}}
+  </main>
+</body>
+</html>
+{{end}}

@@ -97,13 +97,21 @@ Package responsibilities:
 
 ## PR Readiness
 
-Before considering work done, run:
+GitHub Actions is the source of truth for PR checks:
+
+```text
+.github/workflows/pr-check.yml
+```
+
+It runs the local checker:
 
 ```sh
 sh scripts/pr-check.sh
 ```
 
-The checker should remain fast and local. If a new package, dependency, or build step is added, update the checker in the same change.
+When run locally, the checker also configures `core.hooksPath` to use the repo-owned `.githooks/` directory and makes the pre-commit hook executable. In GitHub Actions, it skips local-only hook setup and validates the repository directly.
+
+The checker validates Git setup, repo layout, source formatting, tests, templates, and scripts. It should remain fast and local. If a new package, dependency, hook, or build step is added, update the checker in the same change.
 
 ## Change Discipline
 
@@ -112,4 +120,3 @@ The checker should remain fast and local. If a new package, dependency, or build
 - Do not remove user work.
 - Add tests when changing parser, taxonomy, ranking, storage, or normalization behavior.
 - For UI work, verify templates render through the Go server.
-

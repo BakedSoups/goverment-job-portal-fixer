@@ -1,0 +1,23 @@
+{{define "job_card"}}
+<article class="job-card">
+  <div>
+    <p class="eyebrow">{{.Document.Job.Department}}</p>
+    <h2><a href="/jobs/{{.Document.Job.ID}}">{{.Document.Job.Title}}</a></h2>
+    <p class="summary">{{.Document.Job.Location}} · {{.Document.Job.Employment}} · {{date .Document.Job.ReleasedDate}}</p>
+    {{if .Reasons}}
+      <ul class="reasons">
+        {{range .Reasons}}<li>{{.}}</li>{{end}}
+      </ul>
+    {{end}}
+    <div class="tags">
+      {{range .Document.ConceptNames}}<span>{{.}}</span>{{end}}
+    </div>
+  </div>
+  <aside>
+    <strong>{{.Score}}</strong>
+    <span>score</span>
+    {{if .Document.Job.SalaryMin}}<small>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</small>{{end}}
+  </aside>
+</article>
+{{end}}
+
