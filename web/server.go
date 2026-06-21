@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/BakedSoups/goverment-job-portal-fixer/jobs"
@@ -36,6 +37,9 @@ func NewServer(engine *search_engine.Engine, input []jobs.Job) (*Server, error) 
 				return singular
 			}
 			return plural
+		},
+		"lines": func(v string) []string {
+			return strings.Split(v, "\n")
 		},
 		"json": func(v any) template.JS {
 			b, err := json.Marshal(v)

@@ -14,7 +14,6 @@ type IndexPage struct {
 	SelectedTags    []search_engine.Tag
 	AvailableTags   []search_engine.Tag
 	SelectedTagIDs  string
-	YOEActive       bool
 	YOE             int
 	HiddenByYOE     int
 	Count           int
@@ -33,7 +32,7 @@ type JobPage struct {
 	PageTitle    string
 	Document     search_engine.Document
 	SelectedTags []search_engine.Tag
-	Evidence     []search_engine.TagEvidence
+	SignalTags   []search_engine.Tag
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
@@ -50,10 +49,8 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 	unfilteredCount := len(results)
 
-	yoe, yoeActive := parseYOE(r.URL.Query().Get("yoe"))
-	if yoeActive {
-		results = filterByYOE(results, yoe)
-	}
+	yoe := parseYOE(r.URL.Query().Get("yoe"))
+	results = filterByYOE(results, yoe)
 
 	selectedTags := make([]search_engine.Tag, 0, len(selectedTagIDs))
 	for _, id := range selectedTagIDs {
@@ -68,14 +65,13 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 		SelectedTags:    selectedTags,
 		AvailableTags:   s.engine.Tags(),
 		SelectedTagIDs:  strings.Join(selectedTagIDs, ","),
-		YOEActive:       yoeActive,
 		YOE:             yoe,
 		HiddenByYOE:     unfilteredCount - len(results),
 		Count:           len(results),
 		UnfilteredCount: unfilteredCount,
-		Results:         resultViews(results, searchParams(selectedTagIDs, yoe, yoeActive)),
+		Results:         resultViews(results, searchParams(selectedTagIDs, yoe)),
 		TopTerms:        s.engine.TopTerms(18),
-		SearchParams:    searchParams(selectedTagIDs, yoe, yoeActive),
+		SearchParams:    searchParams(selectedTagIDs, yoe),
 	}
 
 	if err := s.templates.ExecuteTemplate(w, "index.html", page); err != nil {
@@ -91,13 +87,13 @@ func resultViews(results []search_engine.Result, params string) []ResultView {
 	return out
 }
 
-func parseYOE(raw string) (int, bool) {
+func parseYOE(raw string) int {
 	if raw == "" {
-		return 0, false
+		return 0
 	}
 	yoe, err := strconv.Atoi(raw)
 	if err != nil {
-		return 0, false
+		return 0
 	}
 	if yoe < 0 {
 		yoe = 0
@@ -105,7 +101,7 @@ func parseYOE(raw string) (int, bool) {
 	if yoe > 10 {
 		yoe = 10
 	}
-	return yoe, true
+	return yoe
 }
 
 func filterByYOE(results []search_engine.Result, yoe int) []search_engine.Result {
@@ -160,21 +156,29 @@ func (s *Server) handleJob(w http.ResponseWriter, r *http.Request) {
 		PageTitle:    doc.Job.Title,
 		Document:     doc,
 		SelectedTags: selectedTags,
-		Evidence:     s.engine.Evidence(doc, selectedTagIDs, 3),
+		SignalTags:   s.signalTags(doc),
 	}
 	if err := s.templates.ExecuteTemplate(w, "job.html", page); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-func searchParams(tags []string, yoe int, yoeActive bool) string {
+func (s *Server) signalTags(doc search_engine.Document) []search_engine.Tag {
+	tags := make([]search_engine.Tag, 0, len(doc.ConceptNames))
+	for _, id := range doc.ConceptNames {
+		if tag, ok := s.engine.Tag(id); ok {
+			tags = append(tags, tag)
+		}
+	}
+	return tags
+}
+
+func searchParams(tags []string, yoe int) string {
 	var parts []string
 	if len(tags) > 0 {
 		parts = append(parts, "tags="+strings.Join(tags, ","))
 	}
-	if yoeActive {
-		parts = append(parts, "yoe="+strconv.Itoa(yoe))
-	}
+	parts = append(parts, "yoe="+strconv.Itoa(yoe))
 	if len(parts) == 0 {
 		return ""
 	}

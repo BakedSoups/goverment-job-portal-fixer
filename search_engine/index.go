@@ -25,9 +25,10 @@ type Document struct {
 }
 
 type Tag struct {
-	ID       string `json:"id"`
-	Label    string `json:"label"`
-	Category string `json:"category"`
+	ID       string   `json:"id"`
+	Label    string   `json:"label"`
+	Category string   `json:"category"`
+	Aliases  []string `json:"aliases"`
 }
 
 type TagEvidence struct {
@@ -128,6 +129,7 @@ func (e *Engine) Tags() []Tag {
 			ID:       concept.Name,
 			Label:    concept.Label,
 			Category: concept.Category,
+			Aliases:  e.aliasesForTag(concept.Name),
 		})
 	}
 	sort.Slice(tags, func(i, j int) bool {
@@ -144,7 +146,7 @@ func (e *Engine) Tag(id string) (Tag, bool) {
 	if !ok {
 		return Tag{}, false
 	}
-	return Tag{ID: concept.Name, Label: concept.Label, Category: concept.Category}, true
+	return Tag{ID: concept.Name, Label: concept.Label, Category: concept.Category, Aliases: e.aliasesForTag(concept.Name)}, true
 }
 
 func (e *Engine) Evidence(doc Document, tagIDs []string, limitPerTag int) []TagEvidence {

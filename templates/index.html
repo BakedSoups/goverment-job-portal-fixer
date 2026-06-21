@@ -18,13 +18,10 @@
     </div>
     <div class="tag-suggestions" data-tag-suggestions hidden></div>
     <div class="yoe-filter">
-      <label class="yoe-toggle">
-        <input type="checkbox" data-yoe-toggle {{if .YOEActive}}checked{{end}}>
-        <span>Filter by experience fit</span>
-      </label>
+      <label for="yoe-slider">Experience fit</label>
       <div class="yoe-control">
-        <input type="range" name="yoe" min="0" max="10" value="{{.YOE}}" data-yoe-slider {{if not .YOEActive}}disabled{{end}}>
-        <output data-yoe-output>{{if .YOEActive}}{{.YOE}} {{plural .YOE "year" "years"}}{{else}}Any experience{{end}}</output>
+        <input id="yoe-slider" type="range" name="yoe" min="0" max="10" value="{{.YOE}}" data-yoe-slider>
+        <output data-yoe-output>{{.YOE}} {{plural .YOE "year" "years"}}</output>
       </div>
     </div>
   </form>
@@ -39,9 +36,7 @@
   <h2>{{.Count}} matching jobs</h2>
   <div class="result-context">
     {{if .SelectedTags}}<p>Tags: {{range .SelectedTags}}<strong>{{.Label}}</strong> {{end}}</p>{{else if .Query}}<p>Query: <strong>{{.Query}}</strong></p>{{else}}<p>Showing all current listings.</p>{{end}}
-    {{if .YOEActive}}
-      <p>{{.HiddenByYOE}} {{plural .HiddenByYOE "job" "jobs"}} hidden because {{plural .HiddenByYOE "it requires" "they require"}} more than {{.YOE}} {{plural .YOE "year" "years"}} of experience.</p>
-    {{end}}
+    <p>{{.HiddenByYOE}} {{plural .HiddenByYOE "job" "jobs"}} hidden because {{plural .HiddenByYOE "it requires" "they require"}} more than {{.YOE}} {{plural .YOE "year" "years"}} of experience.</p>
   </div>
 </section>
 

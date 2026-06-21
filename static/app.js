@@ -1,4 +1,9 @@
 (function () {
+  initTagSearch();
+  initSignalHighlights();
+})();
+
+function initTagSearch() {
   const form = document.querySelector("[data-tags]");
   if (!form) return;
 
@@ -6,7 +11,6 @@
   const hidden = form.querySelector("[data-tags-value]");
   const selectedEl = form.querySelector("[data-selected-tags]");
   const suggestionsEl = form.querySelector("[data-tag-suggestions]");
-  const yoeToggle = form.querySelector("[data-yoe-toggle]");
   const yoeSlider = form.querySelector("[data-yoe-slider]");
   const yoeOutput = form.querySelector("[data-yoe-output]");
   const tags = JSON.parse(form.dataset.tags || "[]");
@@ -103,16 +107,53 @@
   });
 
   function renderYOE() {
-    if (!yoeToggle || !yoeSlider || !yoeOutput) return;
-    yoeSlider.disabled = !yoeToggle.checked;
-    yoeOutput.textContent = yoeToggle.checked
-      ? `${yoeSlider.value} ${yoeSlider.value === "1" ? "year" : "years"}`
-      : "Any experience";
+    if (!yoeSlider || !yoeOutput) return;
+    yoeOutput.textContent = `${yoeSlider.value} ${yoeSlider.value === "1" ? "year" : "years"}`;
   }
 
-  if (yoeToggle && yoeSlider) {
-    yoeToggle.addEventListener("change", renderYOE);
+  if (yoeSlider) {
     yoeSlider.addEventListener("input", renderYOE);
     renderYOE();
   }
-})();
+}
+
+function initSignalHighlights() {
+  const buttons = document.querySelectorAll("[data-signal-tag]");
+  const lines = Array.from(document.querySelectorAll("[data-listing-line]"));
+  if (buttons.length === 0 || lines.length === 0) return;
+
+  function clearHighlights() {
+    buttons.forEach((button) => button.classList.remove("is-active"));
+    lines.forEach((line) => line.classList.remove("is-highlighted"));
+  }
+
+  function aliasesFor(button) {
+    try {
+      return JSON.parse(button.dataset.aliases || "[]")
+        .map((alias) => alias.toLowerCase().trim())
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
+  }
+
+  function lineMatches(line, aliases) {
+    const text = line.textContent.toLowerCase();
+    return aliases.some((alias) => text.includes(alias));
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const aliases = aliasesFor(button);
+      clearHighlights();
+      button.classList.add("is-active");
+
+      const matches = lines.filter((line) => lineMatches(line, aliases));
+      matches.forEach((line) => line.classList.add("is-highlighted"));
+
+      if (matches[0]) {
+        matches[0].scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  });
+}

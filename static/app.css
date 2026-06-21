@@ -195,17 +195,11 @@ main {
   border-top: 1px solid var(--line);
 }
 
-.yoe-toggle {
+.yoe-filter > label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-weight: 800;
-}
-
-.yoe-toggle input {
-  width: 16px;
-  min-height: 16px;
-  accent-color: var(--accent);
 }
 
 .yoe-control {
@@ -289,7 +283,8 @@ button:hover,
 }
 
 .term-cloud a,
-.tags span {
+.tags span,
+.signal-tags button {
   padding: 5px 9px;
   border: 1px solid rgba(36, 107, 79, 0.16);
   border-radius: 999px;
@@ -298,6 +293,17 @@ button:hover,
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+}
+
+.signal-tags button {
+  cursor: pointer;
+}
+
+.signal-tags button:hover,
+.signal-tags button.is-active {
+  border-color: var(--accent);
+  color: #fff;
+  background: var(--accent);
 }
 
 .term-cloud a:hover {
@@ -478,7 +484,6 @@ button:hover,
 }
 
 .matched-tags,
-.evidence-section,
 .job-section {
   padding: 24px 0;
   border-bottom: 1px solid var(--line);
@@ -504,47 +509,25 @@ button:hover,
   font-size: 14px;
 }
 
-.evidence-section {
-  display: grid;
-  gap: 12px;
-}
-
-.evidence-section h2 {
-  margin: 0;
-  font-family: var(--heading-font);
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.evidence-card {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
-}
-
-.evidence-card h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.evidence-card ul {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding-left: 18px;
-}
-
 .job-section h2,
 .matched-tags h2 {
   margin: 0 0 10px;
   font-size: 22px;
 }
 
-pre {
-  margin: 0;
-  white-space: pre-wrap;
-  font: inherit;
+.listing-lines {
+  display: grid;
+  gap: 2px;
+}
+
+.listing-lines span {
+  border-radius: 4px;
+  scroll-margin: 120px;
+}
+
+.listing-lines span.is-highlighted {
+  background: rgba(184, 135, 45, 0.24);
+  box-shadow: 0 0 0 3px rgba(184, 135, 45, 0.24);
 }
 
 .empty {

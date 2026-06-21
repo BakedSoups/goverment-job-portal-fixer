@@ -28,30 +28,22 @@
     {{else}}
       <p class="parsed-fact"><strong>Required experience:</strong> not parsed</p>
     {{end}}
-    <div class="tags">
-      {{range .Document.ConceptNames}}<span>{{.}}</span>{{else}}<span>No taxonomy matches yet</span>{{end}}
+    <div class="tags signal-tags">
+      {{range .SignalTags}}
+        <button type="button" data-signal-tag="{{.ID}}" data-aliases='{{json .Aliases}}'>{{.Label}}</button>
+      {{else}}
+        <span>No taxonomy matches yet</span>
+      {{end}}
     </div>
   </section>
-
-  {{if .Evidence}}
-    <section class="evidence-section">
-      <h2>Why These Tags Matched</h2>
-      {{range .Evidence}}
-        <article class="evidence-card">
-          <h3>{{.Tag.Label}}</h3>
-          <ul>
-            {{range .Snippets}}<li>{{.}}</li>{{end}}
-          </ul>
-        </article>
-      {{end}}
-    </section>
-  {{end}}
 
   {{range .Document.Job.Sections}}
     {{if .Text}}
       <section class="job-section">
         <h2>{{.Title}}</h2>
-        <pre>{{.Text}}</pre>
+        <div class="listing-lines">
+          {{range lines .Text}}<span data-listing-line>{{.}}</span>{{end}}
+        </div>
       </section>
     {{end}}
   {{end}}
