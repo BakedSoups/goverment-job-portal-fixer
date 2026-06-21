@@ -6,11 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.PageTitle}}</title>
   <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/">SF Jobs Index</a>
-    <span class="topbar-meta">Parsed public job listings</span>
+    <a class="brand" href="/">
+      {{template "icon_briefcase" .}}
+      <span>SF Jobs Index</span>
+    </a>
+    <span class="topbar-meta">Public listings, parsed into searchable signals</span>
   </header>
   <main>
 {{end}}

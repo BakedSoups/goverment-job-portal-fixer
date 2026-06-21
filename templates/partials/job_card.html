@@ -2,8 +2,17 @@
 <article class="job-card">
   <div>
     <p class="eyebrow">{{.Document.Job.Department}}</p>
-    <h2><a href="/jobs/{{.Document.Job.ID}}">{{.Document.Job.Title}}</a></h2>
-    <p class="summary">{{.Document.Job.Location}} · {{.Document.Job.Employment}} · {{date .Document.Job.ReleasedDate}}</p>
+    <h2><a href="/jobs/{{.Document.Job.ID}}{{.SearchParams}}">{{.Document.Job.Title}}</a></h2>
+    <p class="summary">
+      <span>{{template "icon_map_pin" .}}{{.Document.Job.Location}}</span>
+      <span>{{template "icon_briefcase" .}}{{.Document.Job.Employment}}</span>
+      <span>{{template "icon_calendar" .}}{{date .Document.Job.ReleasedDate}}</span>
+      {{if .Document.Job.RequiredYOEFound}}
+        <span>Required: {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}}</span>
+      {{else}}
+        <span>Required: not parsed</span>
+      {{end}}
+    </p>
     {{if .Reasons}}
       <ul class="reasons">
         {{range .Reasons}}<li>{{.}}</li>{{end}}
@@ -14,10 +23,10 @@
     </div>
   </div>
   <aside>
+    {{template "icon_chart" .}}
     <strong>{{.Score}}</strong>
     <span>score</span>
     {{if .Document.Job.SalaryMin}}<small>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</small>{{end}}
   </aside>
 </article>
 {{end}}
-

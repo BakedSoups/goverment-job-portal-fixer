@@ -24,6 +24,17 @@ type Document struct {
 	ConceptNames []string
 }
 
+type Tag struct {
+	ID       string `json:"id"`
+	Label    string `json:"label"`
+	Category string `json:"category"`
+}
+
+type TagEvidence struct {
+	Tag      Tag
+	Snippets []string
+}
+
 func NewEngine(input []jobs.Job) *Engine {
 	matcher := NewMatcher()
 	engine := &Engine{
@@ -82,10 +93,18 @@ func (e *Engine) Document(id string) (Document, bool) {
 }
 
 func (e *Engine) TopTerms(limit int) []TermCount {
-	terms := make([]TermCount, 0, len(e.globalFreq))
-	for term, count := range e.globalFreq {
-		concept, ok := e.concepts[term]
-		if !ok || len(term) < 3 || isStopWord(term) {
+	terms := make([]TermCount, 0, len(e.concepts))
+	for term, concept := range e.concepts {
+		if len(term) < 3 || isStopWord(term) {
+			continue
+		}
+		count := 0
+		for _, doc := range e.docs {
+			if doc.ConceptHits[term] > 0 {
+				count++
+			}
+		}
+		if count == 0 {
 			continue
 		}
 		terms = append(terms, TermCount{Term: term, Label: concept.Label, Count: count})
@@ -100,6 +119,87 @@ func (e *Engine) TopTerms(limit int) []TermCount {
 		return terms[:limit]
 	}
 	return terms
+}
+
+func (e *Engine) Tags() []Tag {
+	tags := make([]Tag, 0, len(e.concepts))
+	for _, concept := range e.concepts {
+		tags = append(tags, Tag{
+			ID:       concept.Name,
+			Label:    concept.Label,
+			Category: concept.Category,
+		})
+	}
+	sort.Slice(tags, func(i, j int) bool {
+		if tags[i].Category == tags[j].Category {
+			return tags[i].Label < tags[j].Label
+		}
+		return tags[i].Category < tags[j].Category
+	})
+	return tags
+}
+
+func (e *Engine) Tag(id string) (Tag, bool) {
+	concept, ok := e.concepts[id]
+	if !ok {
+		return Tag{}, false
+	}
+	return Tag{ID: concept.Name, Label: concept.Label, Category: concept.Category}, true
+}
+
+func (e *Engine) Evidence(doc Document, tagIDs []string, limitPerTag int) []TagEvidence {
+	out := make([]TagEvidence, 0, len(tagIDs))
+	for _, id := range tagIDs {
+		tag, ok := e.Tag(id)
+		if !ok {
+			continue
+		}
+		aliases := e.aliasesForTag(id)
+		snippets := evidenceSnippets(doc.Job.Sections, aliases, limitPerTag)
+		if len(snippets) == 0 {
+			continue
+		}
+		out = append(out, TagEvidence{Tag: tag, Snippets: snippets})
+	}
+	return out
+}
+
+func (e *Engine) aliasesForTag(id string) []string {
+	concept, ok := e.concepts[id]
+	if !ok {
+		return nil
+	}
+	aliases := append([]string{concept.Name, concept.Label}, concept.Aliases...)
+	for i := range aliases {
+		aliases[i] = strings.ToLower(strings.ReplaceAll(aliases[i], "_", " "))
+	}
+	return aliases
+}
+
+func evidenceSnippets(sections []jobs.Section, aliases []string, limit int) []string {
+	var snippets []string
+	seen := map[string]bool{}
+	for _, section := range sections {
+		lines := strings.Split(section.Text, "\n")
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if line == "" || seen[line] {
+				continue
+			}
+			lower := strings.ToLower(line)
+			for _, alias := range aliases {
+				if alias != "" && strings.Contains(lower, alias) {
+					snippets = append(snippets, line)
+					seen[line] = true
+					break
+				}
+			}
+			if limit > 0 && len(snippets) >= limit {
+				return snippets
+			}
+		}
+	}
+	return snippets
 }
 
 func (e *Engine) CanonicalTerms(query string) []string {

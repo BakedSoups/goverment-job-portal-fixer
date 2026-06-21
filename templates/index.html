@@ -1,22 +1,48 @@
 {{template "page_start" .}}
 <section class="search-panel">
-  <form class="search-form" action="/" method="get">
-    <label for="q">Search jobs</label>
-    <div class="search-row">
-      <input id="q" name="q" value="{{.Query}}" placeholder="{{.SearchHint}}" autofocus>
-      <button type="submit">Search</button>
+  <div class="panel-heading">
+    <p class="eyebrow">Civic job intelligence</p>
+    <h1>Find roles by skills, experience, and real requirements.</h1>
+  </div>
+  <form class="search-form tag-search" action="/" method="get" data-tags='{{json .AvailableTags}}'>
+    <label for="tag-input">Search by tags</label>
+    <input type="hidden" name="tags" value="{{.SelectedTagIDs}}" data-tags-value>
+    <div class="selected-tags" data-selected-tags>
+      {{range .SelectedTags}}
+        <button class="selected-tag" type="button" data-tag-id="{{.ID}}">{{.Label}} <span>×</span></button>
+      {{end}}
+    </div>
+    <div class="search-row tag-input-row">
+      <input id="tag-input" data-tag-input autocomplete="off" placeholder="Type Python, SQL, software engineer, data analysis..." autofocus>
+      <button type="submit">{{template "icon_search" .}} <span>Search</span></button>
+    </div>
+    <div class="tag-suggestions" data-tag-suggestions hidden></div>
+    <div class="yoe-filter">
+      <label class="yoe-toggle">
+        <input type="checkbox" data-yoe-toggle {{if .YOEActive}}checked{{end}}>
+        <span>Filter by experience fit</span>
+      </label>
+      <div class="yoe-control">
+        <input type="range" name="yoe" min="0" max="10" value="{{.YOE}}" data-yoe-slider {{if not .YOEActive}}disabled{{end}}>
+        <output data-yoe-output>{{if .YOEActive}}{{.YOE}} {{plural .YOE "year" "years"}}{{else}}Any experience{{end}}</output>
+      </div>
     </div>
   </form>
   <div class="term-cloud">
     {{range .TopTerms}}
-      <a href="/?q={{.Term}}">{{.Label}} <span>{{.Count}}</span></a>
+      <a href="/?tags={{.Term}}" data-suggested-tag="{{.Term}}">{{.Label}}</a>
     {{end}}
   </div>
 </section>
 
 <section class="results-header">
-  <h1>{{.Count}} matching jobs</h1>
-  {{if .Query}}<p>Query: <strong>{{.Query}}</strong></p>{{else}}<p>Showing all current listings.</p>{{end}}
+  <h2>{{.Count}} matching jobs</h2>
+  <div class="result-context">
+    {{if .SelectedTags}}<p>Tags: {{range .SelectedTags}}<strong>{{.Label}}</strong> {{end}}</p>{{else if .Query}}<p>Query: <strong>{{.Query}}</strong></p>{{else}}<p>Showing all current listings.</p>{{end}}
+    {{if .YOEActive}}
+      <p>{{.HiddenByYOE}} {{plural .HiddenByYOE "job" "jobs"}} hidden because {{plural .HiddenByYOE "it requires" "they require"}} more than {{.YOE}} {{plural .YOE "year" "years"}} of experience.</p>
+    {{end}}
+  </div>
 </section>
 
 <section class="results-list">

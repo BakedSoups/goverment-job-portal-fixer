@@ -6,25 +6,46 @@
     <p class="eyebrow">{{.Document.Job.Department}}</p>
     <h1>{{.Document.Job.Title}}</h1>
     <div class="meta-grid">
-      <span>{{.Document.Job.Location}}</span>
-      <span>{{.Document.Job.Employment}}</span>
+      <span>{{template "icon_map_pin" .}}{{.Document.Job.Location}}</span>
+      <span>{{template "icon_briefcase" .}}{{.Document.Job.Employment}}</span>
       <span>{{.Document.Job.Experience}}</span>
-      <span>{{date .Document.Job.ReleasedDate}}</span>
+      <span>{{template "icon_calendar" .}}{{date .Document.Job.ReleasedDate}}</span>
       <span>{{.Document.Job.RefNumber}}</span>
+      {{if .Document.Job.RequiredYOEFound}}<span>Required experience: {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}}</span>{{end}}
       {{if .Document.Job.SalaryMin}}<span>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</span>{{end}}
     </div>
     <p class="actions">
-      <a class="button" href="{{.Document.Job.ApplyURL}}">Apply</a>
+      <a class="button" href="{{.Document.Job.ApplyURL}}">{{template "icon_external" .}} <span>Apply</span></a>
       <a class="button secondary" href="{{.Document.Job.PostingURL}}">Original listing</a>
     </p>
   </header>
 
   <section class="matched-tags">
-    <h2>Parsed Signals</h2>
+    <h2>{{template "icon_chart" .}} Parsed Signals</h2>
+    {{if .Document.Job.RequiredYOEFound}}
+      <p class="parsed-fact"><strong>Required experience:</strong> {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}} · {{.Document.Job.RequiredYOEConfidence}} confidence</p>
+      <p class="parsed-source">{{.Document.Job.RequiredYOESource}}</p>
+    {{else}}
+      <p class="parsed-fact"><strong>Required experience:</strong> not parsed</p>
+    {{end}}
     <div class="tags">
       {{range .Document.ConceptNames}}<span>{{.}}</span>{{else}}<span>No taxonomy matches yet</span>{{end}}
     </div>
   </section>
+
+  {{if .Evidence}}
+    <section class="evidence-section">
+      <h2>Why These Tags Matched</h2>
+      {{range .Evidence}}
+        <article class="evidence-card">
+          <h3>{{.Tag.Label}}</h3>
+          <ul>
+            {{range .Snippets}}<li>{{.}}</li>{{end}}
+          </ul>
+        </article>
+      {{end}}
+    </section>
+  {{end}}
 
   {{range .Document.Job.Sections}}
     {{if .Text}}

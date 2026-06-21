@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -29,6 +30,19 @@ func NewServer(engine *search_engine.Engine, input []jobs.Job) (*Server, error) 
 				return ""
 			}
 			return formatMoney(v)
+		},
+		"plural": func(n int, singular string, plural string) string {
+			if n == 1 {
+				return singular
+			}
+			return plural
+		},
+		"json": func(v any) template.JS {
+			b, err := json.Marshal(v)
+			if err != nil {
+				return "[]"
+			}
+			return template.JS(b)
 		},
 	}
 

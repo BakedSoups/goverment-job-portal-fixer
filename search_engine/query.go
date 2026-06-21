@@ -37,6 +37,36 @@ func (e *Engine) Search(query string) []Result {
 	return results
 }
 
+func (e *Engine) SearchTags(tags []string) []Result {
+	if len(tags) == 0 {
+		return e.Search("")
+	}
+
+	terms := make([]string, 0, len(tags))
+	seen := map[string]bool{}
+	for _, tag := range tags {
+		tag = strings.TrimSpace(tag)
+		if tag == "" || seen[tag] {
+			continue
+		}
+		if _, ok := e.concepts[tag]; ok {
+			terms = append(terms, tag)
+			seen[tag] = true
+		}
+	}
+
+	results := make([]Result, 0)
+	for _, doc := range e.Documents() {
+		score, reasons := e.score(doc, terms)
+		if score > 0 {
+			results = append(results, Result{Document: doc, Score: score, Reasons: reasons})
+		}
+	}
+
+	sortResults(results)
+	return results
+}
+
 func (e *Engine) score(doc Document, terms []string) (int, []string) {
 	score := 0
 	var reasons []string
