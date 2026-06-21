@@ -30,6 +30,19 @@ func TestRequiredExperience(t *testing.T) {
 	}
 }
 
+func TestPreferredExperience(t *testing.T) {
+	text := `Experience:
+One (1) year of experience analyzing enterprise systems.
+Preferred Qualifications
+3-5 years of experience with Oracle APEX development.
+2-4 years of experience with Python programming.`
+
+	got := PreferredExperience(text)
+	if !got.Found || got.Min != 3 || got.Max != 5 {
+		t.Fatalf("PreferredExperience() = %+v, want 3-5 years", got)
+	}
+}
+
 func TestRequiredExperienceIgnoresPreferredAndSubstitution(t *testing.T) {
 	text := `Experience:
 One (1) year of experience analyzing enterprise systems.

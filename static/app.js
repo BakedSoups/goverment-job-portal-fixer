@@ -128,6 +128,8 @@ function initSignalHighlights() {
   }
 
   function aliasesFor(button) {
+    const highlightText = (button.dataset.highlightText || "").toLowerCase().trim();
+    if (highlightText) return [highlightText];
     try {
       return JSON.parse(button.dataset.aliases || "[]")
         .map((alias) => alias.toLowerCase().trim())

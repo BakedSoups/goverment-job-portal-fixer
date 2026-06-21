@@ -9,25 +9,31 @@ import (
 )
 
 type Job struct {
-	ID                    string
-	Title                 string
-	RefNumber             string
-	Department            string
-	Location              string
-	Employment            string
-	Experience            string
-	ReleasedDate          time.Time
-	PostingURL            string
-	ApplyURL              string
-	SalaryMin             int
-	SalaryMax             int
-	RequiredYOEMin        int
-	RequiredYOEFound      bool
-	RequiredYOESource     string
-	RequiredYOEConfidence string
-	Sections              []Section
-	FullText              string
-	Fields                map[string]string
+	ID                     string
+	Title                  string
+	RefNumber              string
+	Department             string
+	Location               string
+	Employment             string
+	Experience             string
+	ReleasedDate           time.Time
+	PostingURL             string
+	ApplyURL               string
+	SalaryMin              int
+	SalaryMax              int
+	RequiredYOEMin         int
+	RequiredYOEMax         int
+	RequiredYOEFound       bool
+	RequiredYOESource      string
+	RequiredYOEConfidence  string
+	PreferredYOEMin        int
+	PreferredYOEMax        int
+	PreferredYOEFound      bool
+	PreferredYOESource     string
+	PreferredYOEConfidence string
+	Sections               []Section
+	FullText               string
+	Fields                 map[string]string
 }
 
 type Section struct {
@@ -52,6 +58,7 @@ func FromSmartRecruiters(raw scraper.Posting) Job {
 	fullText := strings.Join(parts, "\n")
 	minSalary, maxSalary, _ := parser.SalaryRange(fullText)
 	requiredExperience := parser.RequiredExperience(sections[2].Text)
+	preferredExperience := parser.PreferredExperience(sections[2].Text)
 
 	released, _ := time.Parse(time.RFC3339Nano, raw.ReleasedDate)
 
@@ -63,25 +70,31 @@ func FromSmartRecruiters(raw scraper.Posting) Job {
 	}
 
 	return Job{
-		ID:                    raw.ID,
-		Title:                 raw.Name,
-		RefNumber:             raw.RefNumber,
-		Department:            raw.Department.Label,
-		Location:              raw.Location.FullLocation,
-		Employment:            raw.Employment.Label,
-		Experience:            raw.Experience.Label,
-		ReleasedDate:          released,
-		PostingURL:            raw.PostingURL,
-		ApplyURL:              raw.ApplyURL,
-		SalaryMin:             minSalary,
-		SalaryMax:             maxSalary,
-		RequiredYOEMin:        requiredExperience.Min,
-		RequiredYOEFound:      requiredExperience.Found,
-		RequiredYOESource:     requiredExperience.Source,
-		RequiredYOEConfidence: requiredExperience.Confidence,
-		Sections:              sections,
-		FullText:              parser.CleanText(fullText),
-		Fields:                fields,
+		ID:                     raw.ID,
+		Title:                  raw.Name,
+		RefNumber:              raw.RefNumber,
+		Department:             raw.Department.Label,
+		Location:               raw.Location.FullLocation,
+		Employment:             raw.Employment.Label,
+		Experience:             raw.Experience.Label,
+		ReleasedDate:           released,
+		PostingURL:             raw.PostingURL,
+		ApplyURL:               raw.ApplyURL,
+		SalaryMin:              minSalary,
+		SalaryMax:              maxSalary,
+		RequiredYOEMin:         requiredExperience.Min,
+		RequiredYOEMax:         requiredExperience.Max,
+		RequiredYOEFound:       requiredExperience.Found,
+		RequiredYOESource:      requiredExperience.Source,
+		RequiredYOEConfidence:  requiredExperience.Confidence,
+		PreferredYOEMin:        preferredExperience.Min,
+		PreferredYOEMax:        preferredExperience.Max,
+		PreferredYOEFound:      preferredExperience.Found,
+		PreferredYOESource:     preferredExperience.Source,
+		PreferredYOEConfidence: preferredExperience.Confidence,
+		Sections:               sections,
+		FullText:               parser.CleanText(fullText),
+		Fields:                 fields,
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 
 type ExperienceRequirement struct {
 	Min        int
+	Max        int
 	Found      bool
 	Source     string
 	Confidence string
@@ -32,9 +33,10 @@ func RequiredExperience(text string) ExperienceRequirement {
 			continue
 		}
 
-		if min, ok := yearsFromLine(line); ok {
+		if min, max, ok := yearsFromLine(line); ok {
 			return ExperienceRequirement{
 				Min:        min,
+				Max:        max,
 				Found:      true,
 				Source:     line,
 				Confidence: "high",
@@ -45,14 +47,42 @@ func RequiredExperience(text string) ExperienceRequirement {
 	return ExperienceRequirement{}
 }
 
-func yearsFromLine(line string) (int, bool) {
+func PreferredExperience(text string) ExperienceRequirement {
+	lines := strings.Split(CleanText(text), "\n")
+	inPreferred := false
+	for _, line := range lines {
+		lower := strings.ToLower(line)
+		if isPreferredExperienceSection(lower) {
+			inPreferred = true
+			continue
+		}
+		if !inPreferred || shouldIgnoreExperienceLine(lower) || !strings.Contains(lower, "experience") {
+			continue
+		}
+		if min, max, ok := yearsFromLine(line); ok {
+			return ExperienceRequirement{
+				Min:        min,
+				Max:        max,
+				Found:      true,
+				Source:     line,
+				Confidence: "medium",
+			}
+		}
+	}
+	return ExperienceRequirement{}
+}
+
+func yearsFromLine(line string) (int, int, bool) {
 	if match := yearRangeRE.FindStringSubmatch(line); len(match) == 3 {
-		return numberWord(match[1])
+		min, minOK := numberWord(match[1])
+		max, maxOK := numberWord(match[2])
+		return min, max, minOK && maxOK
 	}
 	if match := yearRE.FindStringSubmatch(line); len(match) == 2 {
-		return numberWord(match[1])
+		min, ok := numberWord(match[1])
+		return min, min, ok
 	}
-	return 0, false
+	return 0, 0, false
 }
 
 func numberWord(raw string) (int, bool) {

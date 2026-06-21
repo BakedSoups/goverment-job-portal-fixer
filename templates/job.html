@@ -24,11 +24,19 @@
     <h2>{{template "icon_chart" .}} Parsed Signals</h2>
     {{if .Document.Job.RequiredYOEFound}}
       <p class="parsed-fact"><strong>Required experience:</strong> {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}} · {{.Document.Job.RequiredYOEConfidence}} confidence</p>
-      <p class="parsed-source">{{.Document.Job.RequiredYOESource}}</p>
     {{else}}
       <p class="parsed-fact"><strong>Required experience:</strong> not parsed</p>
     {{end}}
+    {{if .Document.Job.PreferredYOEFound}}
+      <p class="parsed-fact"><strong>Preferred experience:</strong> {{.Document.Job.PreferredYOEMin}}{{if ne .Document.Job.PreferredYOEMin .Document.Job.PreferredYOEMax}}-{{.Document.Job.PreferredYOEMax}}{{end}} {{plural .Document.Job.PreferredYOEMax "year" "years"}} · {{.Document.Job.PreferredYOEConfidence}} confidence</p>
+    {{end}}
     <div class="tags signal-tags">
+      {{if .Document.Job.RequiredYOEFound}}
+        <button type="button" data-signal-tag="required_yoe" data-highlight-text="{{.Document.Job.RequiredYOESource}}">Required {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}}</button>
+      {{end}}
+      {{if .Document.Job.PreferredYOEFound}}
+        <button type="button" data-signal-tag="preferred_yoe" data-highlight-text="{{.Document.Job.PreferredYOESource}}">Preferred {{.Document.Job.PreferredYOEMin}}{{if ne .Document.Job.PreferredYOEMin .Document.Job.PreferredYOEMax}}-{{.Document.Job.PreferredYOEMax}}{{end}} {{plural .Document.Job.PreferredYOEMax "year" "years"}}</button>
+      {{end}}
       {{range .SignalTags}}
         <button type="button" data-signal-tag="{{.ID}}" data-aliases='{{json .Aliases}}'>{{.Label}}</button>
       {{else}}
