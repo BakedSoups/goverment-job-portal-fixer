@@ -1,7 +1,8 @@
 #!/bin/sh
 set -eu
 
-repo_root="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+CDPATH=''
+repo_root="$(cd -- "$(dirname -- "$0")/.." && pwd)"
 cd "$repo_root"
 
 fail() {
@@ -81,11 +82,8 @@ check_go() {
   fi
 
   info "checking gofmt"
-  go_files="$(find . -path ./.git -prune -o -name '*.go' -print)"
-  if [ -n "$go_files" ]; then
-    unformatted="$(gofmt -l $go_files)"
-    [ -z "$unformatted" ] || fail "gofmt needed for: $unformatted"
-  fi
+  unformatted="$(find . -path ./.git -prune -o -name '*.go' -exec gofmt -l {} +)"
+  [ -z "$unformatted" ] || fail "gofmt needed for: $unformatted"
 
   info "running go test"
   go test ./...
