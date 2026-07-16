@@ -6,12 +6,17 @@ I tried applying to the City and County of San Francisco to see what software en
 
 ## How it works
 
-The Go application collects public job information from:
+At startup, the Go application requests JSON from these public endpoints:
 
-- the SmartRecruiters public API for San Francisco;
-- public GovernmentJobs JSON endpoints for other Bay Area governments.
+```text
+GET https://api.smartrecruiters.com/v1/companies/CityAndCountyOfSanFrancisco1/postings?limit=100&offset={offset}
+GET {ref URL returned by each SmartRecruiters posting summary}
+GET https://www.governmentjobs.com/careers/{tenant}/home/loadJobsOnMaps
+```
 
-At startup, raw postings are normalized into a common job model and indexed in memory. Searches and live filters use that index, so changing a filter does not scrape the APIs again.
+The GovernmentJobs tenant values cover the configured Bay Area cities and counties, including `contracosta`, `sanmateo`, `santaclara`, `marin`, `sonoma`, `napacounty`, `solanocounty`, `alamedaca`, `berkeley`, `fremontca`, `haywardca`, `oaklandca`, `richmondca`, `mountainview`, `paloaltoca`, `sanjoseca`, `cityofsantaclaraca`, `sunnyvale`, and `vallejo`.
+
+Each JSON response is decoded into provider-specific Go structs and then normalized into a common job model. The normalized jobs are indexed in memory; searches and live filters use that index, so changing a filter does not request the endpoints again. The current application does not write a local JSON cache or database.
 
 The explainable search engine uses familiar techniques instead of a black-box model:
 
