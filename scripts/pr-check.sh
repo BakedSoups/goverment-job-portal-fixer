@@ -120,6 +120,12 @@ check_scripts() {
   else
     printf 'pr-check: shellcheck not installed; skipping shell lint\n' >&2
   fi
+
+  if [ -d deploy/zero ]; then
+    command -v node >/dev/null 2>&1 || fail "deploy/zero requires Node.js for validation"
+    node --input-type=module --check <deploy/zero/worker.js
+    node --check deploy/zero/build-payload.mjs
+  fi
 }
 
 check_required_layout

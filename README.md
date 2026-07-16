@@ -37,6 +37,20 @@ go run .
 
 Open <http://localhost:8080>.
 
+## Zero deployment
+
+Zero runs Cloudflare Workers rather than Go processes. The deployment adapter under `deploy/zero/` serves a normalized snapshot produced by the Go scraper and search index:
+
+```sh
+go run ./cmd/export-snapshot -output /tmp/jobs.json
+curl http://localhost:8080/ -o /tmp/index.html
+node deploy/zero/build-payload.mjs --index /tmp/index.html --snapshot /tmp/jobs.json --output /tmp/zero-deploy.json
+```
+
+The generated payload contains public job data and static assets only. It does not contain credentials.
+
+Zero custom domains currently work only for domains purchased through Zero's domain service. Domains bought from another registrar need an HTTPS reverse proxy in front of the generated `*.app.withzero.ai` address; a DNS-only CNAME does not establish Zero's required hostname and TLS mapping.
+
 ## Checks
 
 ```sh
