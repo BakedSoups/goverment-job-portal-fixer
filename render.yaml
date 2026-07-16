@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: civic-job-finder
+    runtime: go
+    plan: free
+    buildCommand: go run ./cmd/export-snapshot -output data/jobs.json && mkdir -p bin && go build -o bin/server .
+    startCommand: ./bin/server
+    healthCheckPath: /healthz
+    envVars:
+      - key: JOBS_SNAPSHOT
+        value: data/jobs.json

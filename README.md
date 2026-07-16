@@ -51,6 +51,10 @@ The generated payload contains public job data and static assets only. It does n
 
 Zero custom domains currently work only for domains purchased through Zero's domain service. Domains bought from another registrar need an HTTPS reverse proxy in front of the generated `*.app.withzero.ai` address; a DNS-only CNAME does not establish Zero's required hostname and TLS mapping.
 
+## Render deployment
+
+The included `render.yaml` creates a free Go web service. Its build collects a fresh jobs snapshot, and the server loads that snapshot through `JOBS_SNAPSHOT` for fast starts. Render supplies `PORT` automatically; no API keys are required.
+
 ## Checks
 
 ```sh
