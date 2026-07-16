@@ -1,10 +1,36 @@
 {{template "page_start" .}}
-<section class="search-panel">
+<div class="jobs-workspace">
+  <div class="results-column">
+    <section class="results-header">
+      <h2>{{.Count}} matching jobs</h2>
+    </section>
+
+    <section class="results-list">
+      {{range .Results}}
+        {{template "job_card" .}}
+      {{else}}
+        <p class="empty">No jobs matched this query.</p>
+      {{end}}
+    </section>
+  </div>
+
+  <aside class="filter-sidebar" aria-label="Search and filters">
+  <section class="search-panel">
   <div class="panel-heading">
     <p class="eyebrow">Civic job intelligence</p>
     <h1>Find roles by skills, experience, and real requirements.</h1>
   </div>
   <form class="search-form tag-search" action="/" method="get" data-tags='{{json .AvailableTags}}'>
+    <section class="map-view" aria-labelledby="map-title">
+      <div class="map-copy">
+        <h2 id="map-title">Bay Area availability</h2>
+        <p>Darker districts have more jobs matching the current filters.</p>
+      </div>
+      <div class="bay-map" data-leaflet-map data-regions-url="/static/data/bay-area-regions.geojson" data-districts='{{json .MapDistricts}}' aria-label="Bay Area job availability by district">
+        <div class="leaflet-map" data-leaflet-canvas></div>
+        <div class="map-status" data-map-status>Loading map...</div>
+      </div>
+    </section>
     <label for="tag-input">Search by tags</label>
     <input type="hidden" name="tags" value="{{.SelectedTagIDs}}" data-tags-value>
     <div class="selected-tags" data-selected-tags>
@@ -13,38 +39,83 @@
       {{end}}
     </div>
     <div class="search-row tag-input-row">
-      <input id="tag-input" data-tag-input autocomplete="off" placeholder="Type Python, SQL, software engineer, data analysis..." autofocus>
+      <input id="tag-input" name="q" value="{{.Query}}" data-tag-input autocomplete="off" placeholder="Type Python, Excel, facilities, nursing, management..." autofocus>
       <button type="submit">{{template "icon_search" .}} <span>Search</span></button>
     </div>
     <div class="tag-suggestions" data-tag-suggestions hidden></div>
+    <p class="live-filter-status" data-live-status aria-live="polite"></p>
     <div class="yoe-filter">
-      <label for="yoe-slider">Experience fit</label>
+      <span class="filter-label">Required experience range</span>
       <div class="yoe-control">
-        <input id="yoe-slider" type="range" name="yoe" min="0" max="10" value="{{.YOE}}" data-yoe-slider>
-        <output data-yoe-output>{{.YOE}} {{plural .YOE "year" "years"}}</output>
+        <div class="yoe-range-heading">
+          <span>Minimum</span>
+          <output data-yoe-output>{{.YOEMin}}–{{.YOEMax}} years</output>
+          <span>Maximum</span>
+        </div>
+        <div class="yoe-range-track" data-yoe-track>
+          <input type="range" name="yoe_min" min="0" max="10" value="{{.YOEMin}}" aria-label="Minimum required experience" data-yoe-min>
+          <input type="range" name="yoe_max" min="0" max="10" value="{{.YOEMax}}" aria-label="Maximum required experience" data-yoe-max>
+        </div>
       </div>
     </div>
+    <div class="government-filter" data-government-picker>
+      <details class="government-picker" {{if .SelectedGovCount}}open{{end}}>
+        <summary>
+          <span>Governments</span>
+          <small data-government-summary>{{if .SelectedGovCount}}{{.SelectedGovCount}} selected{{else}}All governments{{end}}</small>
+        </summary>
+        <div class="government-picker-body">
+          <label class="government-search">
+            <span class="visually-hidden">Find a government</span>
+            <input type="search" placeholder="Find a government..." autocomplete="off" data-government-query>
+          </label>
+          <div class="government-groups">
+            {{range .SourceGroups}}
+              <details class="government-group" data-government-group data-region="{{.Name}}" {{if .SelectedCount}}open{{end}}>
+                <summary>
+                  <span>{{.Name}}</span>
+                  <small data-region-summary>{{if .SelectedCount}}{{.SelectedCount}}/{{len .Options}} selected{{else}}{{len .Options}} governments{{end}}</small>
+                </summary>
+                <div class="government-group-options">
+                  <label class="region-option">
+                    <input type="checkbox" data-region-toggle aria-label="Select all {{.Name}} governments" {{if .AllSelected}}checked{{end}}>
+                    <strong>Select all {{.Name}}</strong>
+                  </label>
+                  {{range .Options}}
+                    <label class="government-option" data-government-option data-search="{{.Name}} {{.Region}}">
+                      <input type="checkbox" name="gov" value="{{.ID}}" {{if .Selected}}checked{{end}}>
+                      <span>{{.Name}}</span>
+                      <small>{{.Count}} {{plural .Count "job" "jobs"}}</small>
+                    </label>
+                  {{end}}
+                </div>
+              </details>
+            {{end}}
+          </div>
+          <div class="government-actions">
+            <small>Changes apply automatically</small>
+            <button type="button" class="button secondary" data-clear-governments>Clear</button>
+          </div>
+        </div>
+      </details>
+    </div>
   </form>
-  <div class="term-cloud">
-    {{range .TopTerms}}
-      <a href="/?tags={{.Term}}" data-suggested-tag="{{.Term}}">{{.Label}}</a>
+  <div class="tag-browser">
+    {{range .TagGroups}}
+      <details class="tag-group">
+        <summary>
+          <span>{{.Name}}</span>
+          <small>{{.Count}} {{plural .Count "job" "jobs"}}</small>
+        </summary>
+        <div class="tag-group-tags">
+          {{range .Tags}}
+            <a href="/?tags={{.ID}}" data-suggested-tag="{{.ID}}">{{.Label}} <span>{{.Count}}</span></a>
+          {{end}}
+        </div>
+      </details>
     {{end}}
   </div>
-</section>
-
-<section class="results-header">
-  <h2>{{.Count}} matching jobs</h2>
-  <div class="result-context">
-    {{if .SelectedTags}}<p>Tags: {{range .SelectedTags}}<strong>{{.Label}}</strong> {{end}}</p>{{else if .Query}}<p>Query: <strong>{{.Query}}</strong></p>{{else}}<p>Showing all current listings.</p>{{end}}
-    <p>{{.HiddenByYOE}} {{plural .HiddenByYOE "job" "jobs"}} hidden because {{plural .HiddenByYOE "it requires" "they require"}} more than {{.YOE}} {{plural .YOE "year" "years"}} of experience.</p>
-  </div>
-</section>
-
-<section class="results-list">
-  {{range .Results}}
-    {{template "job_card" .}}
-  {{else}}
-    <p class="empty">No jobs matched this query.</p>
-  {{end}}
-</section>
+  </section>
+  </aside>
+</div>
 {{template "page_end" .}}

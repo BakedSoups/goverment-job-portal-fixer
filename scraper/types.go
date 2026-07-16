@@ -14,6 +14,14 @@ type Summary struct {
 	RefNumber string `json:"refNumber"`
 }
 
+type Source struct {
+	ID         string
+	Name       string
+	Kind       string
+	Identifier string
+	Region     string
+}
+
 type Posting struct {
 	ID           string        `json:"id"`
 	Name         string        `json:"name"`
@@ -27,6 +35,7 @@ type Posting struct {
 	Experience   Label         `json:"experienceLevel"`
 	CustomField  []CustomField `json:"customField"`
 	JobAd        JobAd         `json:"jobAd"`
+	Source       Source        `json:"-"`
 }
 
 type Location struct {

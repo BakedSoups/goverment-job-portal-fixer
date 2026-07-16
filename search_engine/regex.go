@@ -22,6 +22,9 @@ func NewMatcher() Matcher {
 		compiled := compiledConcept{concept: concept}
 		aliases := append([]string{concept.Name, concept.Label}, concept.Aliases...)
 		for _, alias := range aliases {
+			if isQueryOnlyAlias(alias) {
+				continue
+			}
 			pattern := `(?i)\b` + regexp.QuoteMeta(strings.ToLower(alias)) + `\b`
 			compiled.regexps = append(compiled.regexps, regexp.MustCompile(pattern))
 		}
@@ -39,4 +42,22 @@ func (m Matcher) Match(text string) map[string]int {
 		}
 	}
 	return out
+}
+
+func isQueryOnlyAlias(alias string) bool {
+	switch strings.ToLower(strings.TrimSpace(alias)) {
+	case "administration",
+		"administrative",
+		"analytics",
+		"budget",
+		"finance",
+		"leadership",
+		"management",
+		"manager",
+		"operations",
+		"programs":
+		return true
+	default:
+		return false
+	}
 }

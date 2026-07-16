@@ -5,16 +5,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.PageTitle}}</title>
-  <link rel="stylesheet" href="/static/app.css">
-  <script src="/static/app.js" defer></script>
+  <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css?v=leaflet-1.9.4">
+  <link rel="stylesheet" href="/static/app.css?v=20260716-dark-range-1">
+  <script src="/static/vendor/leaflet/leaflet.js?v=leaflet-1.9.4" defer></script>
+  <script src="/static/app.js?v=20260716-dark-range-1" defer></script>
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="/">
       {{template "icon_briefcase" .}}
-      <span>SF Jobs Index</span>
+      <span>Bay Area Gov Jobs</span>
     </a>
-    <span class="topbar-meta">Public listings, parsed into searchable signals</span>
+    <div class="topbar-actions">
+      <span class="topbar-meta">Job information provided through public APIs</span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Dark mode</button>
+      <a class="github-link" href="https://github.com/BakedSoups/goverment-job-portal-fixer" target="_blank" rel="noopener noreferrer">
+        {{template "icon_external" .}}
+        <span>GitHub</span>
+      </a>
+    </div>
   </header>
   <main>
 {{end}}

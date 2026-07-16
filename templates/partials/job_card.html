@@ -1,7 +1,11 @@
 {{define "job_card"}}
-<article class="job-card">
+<article class="job-card" data-region="{{.Document.Job.SourceRegion}}">
   <div>
     <p class="eyebrow">{{.Document.Job.Department}}</p>
+    <div class="source-badges">
+      <span class="source-badge source-{{.Document.Job.SourceID}}">{{.Document.Job.SourceName}}</span>
+      {{if .Document.Job.SourceRegion}}<span class="source-region">{{.Document.Job.SourceRegion}}</span>{{end}}
+    </div>
     <h2><a href="/jobs/{{.Document.Job.ID}}{{.SearchParams}}">{{.Document.Job.Title}}</a></h2>
     <p class="summary">
       <span>{{template "icon_map_pin" .}}{{.Document.Job.Location}}</span>
@@ -10,22 +14,19 @@
       {{if .Document.Job.RequiredYOEFound}}
         <span>Required: {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}}</span>
       {{else}}
-        <span>Required: not parsed</span>
+        <span>Required experience: not specified</span>
       {{end}}
     </p>
-    {{if .Reasons}}
-      <ul class="reasons">
-        {{range .Reasons}}<li>{{.}}</li>{{end}}
-      </ul>
-    {{end}}
     <div class="tags">
-      {{range .Document.ConceptNames}}<span>{{.}}</span>{{end}}
+      {{range .ConceptTags}}<span class="{{if .Matched}}is-matched{{end}}">{{.Label}}</span>{{end}}
     </div>
   </div>
   <aside>
-    {{template "icon_chart" .}}
-    <strong>{{.Score}}</strong>
-    <span>score</span>
+    {{if .MatchLabel}}
+      {{template "icon_chart" .}}
+      <strong class="match-label" title="{{.MatchDetail}}">{{.MatchLabel}}</strong>
+      <span class="match-detail">{{.MatchDetail}}</span>
+    {{end}}
     {{if .Document.Job.SalaryMin}}<small>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</small>{{end}}
   </aside>
 </article>

@@ -1,9 +1,13 @@
 {{template "page_start" .}}
-<article class="job-detail">
+<article class="job-detail" data-region="{{.Document.Job.SourceRegion}}">
   <nav class="back"><a href="/">Back to search</a></nav>
 
   <header class="job-heading">
     <p class="eyebrow">{{.Document.Job.Department}}</p>
+    <div class="source-badges">
+      <span class="source-badge source-{{.Document.Job.SourceID}}">{{.Document.Job.SourceName}}</span>
+      {{if .Document.Job.SourceRegion}}<span class="source-region">{{.Document.Job.SourceRegion}}</span>{{end}}
+    </div>
     <h1>{{.Document.Job.Title}}</h1>
     <div class="meta-grid">
       <span>{{template "icon_map_pin" .}}{{.Document.Job.Location}}</span>
@@ -22,10 +26,11 @@
 
   <section class="matched-tags">
     <h2>{{template "icon_chart" .}} Parsed Signals</h2>
+    <p class="signal-help">Click a signal to find where it was found in the listing.</p>
     {{if .Document.Job.RequiredYOEFound}}
       <p class="parsed-fact"><strong>Required experience:</strong> {{.Document.Job.RequiredYOEMin}} {{plural .Document.Job.RequiredYOEMin "year" "years"}} · {{.Document.Job.RequiredYOEConfidence}} confidence</p>
     {{else}}
-      <p class="parsed-fact"><strong>Required experience:</strong> not parsed</p>
+      <p class="parsed-fact"><strong>Required experience:</strong> not specified</p>
     {{end}}
     {{if .Document.Job.PreferredYOEFound}}
       <p class="parsed-fact"><strong>Preferred experience:</strong> {{.Document.Job.PreferredYOEMin}}{{if ne .Document.Job.PreferredYOEMin .Document.Job.PreferredYOEMax}}-{{.Document.Job.PreferredYOEMax}}{{end}} {{plural .Document.Job.PreferredYOEMax "year" "years"}} · {{.Document.Job.PreferredYOEConfidence}} confidence</p>

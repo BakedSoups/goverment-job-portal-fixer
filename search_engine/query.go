@@ -74,27 +74,33 @@ func (e *Engine) score(doc Document, terms []string) (int, []string) {
 	department := strings.ToLower(doc.Job.Department)
 
 	for _, term := range terms {
+		termScore := 0
 		if count := doc.ConceptHits[term]; count > 0 {
 			points := count * 12
-			score += points
+			termScore += points
 			reasons = append(reasons, term+" concept matched")
 		}
 
 		if count := doc.Frequencies[term]; count > 0 {
 			points := count * 3
-			score += points
+			termScore += points
 			reasons = append(reasons, term+" frequency matched")
 		}
 
 		if strings.Contains(title, strings.ReplaceAll(term, "_", " ")) || strings.Contains(title, term) {
-			score += 30
+			termScore += 30
 			reasons = append(reasons, term+" matched title")
 		}
 
 		if strings.Contains(department, term) {
-			score += 8
+			termScore += 8
 			reasons = append(reasons, term+" matched department")
 		}
+
+		if termScore == 0 {
+			return 0, nil
+		}
+		score += termScore
 	}
 
 	return score, unique(reasons)

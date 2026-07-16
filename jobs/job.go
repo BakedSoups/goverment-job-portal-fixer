@@ -10,6 +10,9 @@ import (
 
 type Job struct {
 	ID                     string
+	SourceID               string
+	SourceName             string
+	SourceRegion           string
 	Title                  string
 	RefNumber              string
 	Department             string
@@ -71,6 +74,9 @@ func FromSmartRecruiters(raw scraper.Posting) Job {
 
 	return Job{
 		ID:                     raw.ID,
+		SourceID:               raw.Source.ID,
+		SourceName:             raw.Source.Name,
+		SourceRegion:           raw.Source.Region,
 		Title:                  raw.Name,
 		RefNumber:              raw.RefNumber,
 		Department:             raw.Department.Label,

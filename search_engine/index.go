@@ -29,6 +29,13 @@ type Tag struct {
 	Label    string   `json:"label"`
 	Category string   `json:"category"`
 	Aliases  []string `json:"aliases"`
+	Count    int      `json:"count"`
+}
+
+type TagGroup struct {
+	Name  string
+	Tags  []Tag
+	Count int
 }
 
 type TagEvidence struct {
@@ -130,6 +137,7 @@ func (e *Engine) Tags() []Tag {
 			Label:    concept.Label,
 			Category: concept.Category,
 			Aliases:  e.aliasesForTag(concept.Name),
+			Count:    e.countTag(concept.Name),
 		})
 	}
 	sort.Slice(tags, func(i, j int) bool {
@@ -141,12 +149,53 @@ func (e *Engine) Tags() []Tag {
 	return tags
 }
 
+func (e *Engine) TagGroups() []TagGroup {
+	grouped := map[string][]Tag{}
+	for _, tag := range e.Tags() {
+		grouped[tag.Category] = append(grouped[tag.Category], tag)
+	}
+
+	groups := make([]TagGroup, 0, len(grouped))
+	for name, tags := range grouped {
+		groups = append(groups, TagGroup{
+			Name:  name,
+			Tags:  tags,
+			Count: sumTagCounts(tags),
+		})
+	}
+	sort.Slice(groups, func(i, j int) bool {
+		if groups[i].Count == groups[j].Count {
+			return groups[i].Name < groups[j].Name
+		}
+		return groups[i].Count > groups[j].Count
+	})
+	return groups
+}
+
 func (e *Engine) Tag(id string) (Tag, bool) {
 	concept, ok := e.concepts[id]
 	if !ok {
 		return Tag{}, false
 	}
-	return Tag{ID: concept.Name, Label: concept.Label, Category: concept.Category, Aliases: e.aliasesForTag(concept.Name)}, true
+	return Tag{ID: concept.Name, Label: concept.Label, Category: concept.Category, Aliases: e.aliasesForTag(concept.Name), Count: e.countTag(concept.Name)}, true
+}
+
+func (e *Engine) countTag(id string) int {
+	count := 0
+	for _, doc := range e.docs {
+		if doc.ConceptHits[id] > 0 {
+			count++
+		}
+	}
+	return count
+}
+
+func sumTagCounts(tags []Tag) int {
+	count := 0
+	for _, tag := range tags {
+		count += tag.Count
+	}
+	return count
 }
 
 func (e *Engine) Evidence(doc Document, tagIDs []string, limitPerTag int) []TagEvidence {
@@ -210,6 +259,9 @@ func (e *Engine) CanonicalTerms(query string) []string {
 	lower := strings.ToLower(query)
 
 	for alias, concept := range e.aliasMap {
+		if !strings.ContainsAny(alias, " +#.-") {
+			continue
+		}
 		if strings.Contains(lower, alias) && !seen[concept.Name] {
 			out = append(out, concept.Name)
 			seen[concept.Name] = true
