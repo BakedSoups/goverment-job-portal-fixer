@@ -80,6 +80,10 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if !strings.Contains(page.Body.String(), `href="https://github.com/BakedSoups/goverment-job-portal-fixer"`) {
 		t.Fatal("page header does not link to the GitHub repository")
 	}
+	if !strings.Contains(page.Body.String(), `aria-label="View source on GitHub"`) ||
+		!strings.Contains(page.Body.String(), `class="icon icon-github"`) {
+		t.Fatal("page header does not render an accessible GitHub icon")
+	}
 	if strings.Contains(page.Body.String(), "theme-toggle") || strings.Contains(page.Body.String(), "Dark mode") {
 		t.Fatal("page header still renders the removed dark-mode control")
 	}

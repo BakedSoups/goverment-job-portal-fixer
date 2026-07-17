@@ -98,12 +98,17 @@ a {
 }
 
 .github-link:hover {
-  text-decoration: underline;
+  color: var(--ink);
 }
 
 .github-link .icon {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
+}
+
+.icon-github {
+  fill: currentColor;
+  stroke: none;
 }
 
 main {
