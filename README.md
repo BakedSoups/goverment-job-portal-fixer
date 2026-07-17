@@ -55,6 +55,8 @@ Zero custom domains currently work only for domains purchased through Zero's dom
 
 The included `render.yaml` creates a free Go web service. Its build collects a fresh jobs snapshot, and the server loads that snapshot through `JOBS_SNAPSHOT` for fast starts. Render supplies `PORT` automatically; no API keys are required.
 
+The `Refresh Job Snapshot` GitHub workflow triggers a fresh Render build every day at 12:17 UTC. Create a Render Deploy Hook under the service's settings, then save its private URL as the GitHub repository secret `RENDER_DEPLOY_HOOK_URL`. The workflow can also be run manually from the Actions tab.
+
 ## Checks
 
 ```sh
