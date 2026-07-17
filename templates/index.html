@@ -24,9 +24,9 @@
     <section class="map-view" aria-labelledby="map-title">
       <div class="map-copy">
         <h2 id="map-title">Bay Area availability</h2>
-        <p>Darker districts have more jobs matching the current filters.</p>
+        <p>Colors separate Bay Area regions. Pins show matching jobs by location.</p>
       </div>
-      <div class="bay-map" data-leaflet-map data-regions-url="/static/data/bay-area-regions.geojson" data-districts='{{json .MapDistricts}}' aria-label="Bay Area job availability by district">
+      <div class="bay-map" data-leaflet-map data-regions-url="/static/data/bay-area-regions.geojson" data-districts='{{json .MapDistricts}}' data-points='{{json .MapPoints}}' aria-label="Bay Area job availability by location">
         <div class="leaflet-map" data-leaflet-canvas></div>
         <div class="map-status" data-map-status>Loading map...</div>
       </div>

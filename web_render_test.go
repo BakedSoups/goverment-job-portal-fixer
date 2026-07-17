@@ -104,6 +104,10 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 		!strings.Contains(page.Body.String(), `name="yoe_max"`) {
 		t.Fatal("experience filter does not render two handles on one range track")
 	}
+	if !strings.Contains(page.Body.String(), `data-points=`) ||
+		!strings.Contains(page.Body.String(), "Pins show matching jobs by location") {
+		t.Fatal("map does not render job-location pins and explanatory copy")
+	}
 
 	asset := httptest.NewRecorder()
 	handler.ServeHTTP(asset, httptest.NewRequest(http.MethodGet, "/static/data/bay-area-regions.geojson", nil))

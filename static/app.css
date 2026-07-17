@@ -120,6 +120,30 @@ a {
   stroke: none;
 }
 
+.job-map-marker-wrap {
+  background: none;
+  border: 0;
+}
+
+.job-map-marker {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 3px solid #fffdf8;
+  border-radius: 50% 50% 50% 8px;
+  color: #fff;
+  background: var(--accent-dark);
+  box-shadow: 0 2px 7px rgba(30, 45, 36, 0.35);
+  font: 800 11px/1 var(--ui-font);
+  transform: rotate(-45deg);
+}
+
+.job-map-marker > span {
+  display: block;
+  transform: rotate(45deg);
+}
+
 main {
   max-width: 1720px;
   margin: 0 auto;

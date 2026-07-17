@@ -17,6 +17,7 @@ type IndexPage struct {
 	AvailableTags    []search_engine.Tag
 	TagGroups        []search_engine.TagGroup
 	MapDistricts     []MapDistrict
+	MapPoints        []MapPoint
 	SourceGroups     []SourceGroup
 	SelectedTagIDs   string
 	SelectedGovIDs   string
@@ -57,6 +58,15 @@ type MapDistrict struct {
 	Count    int    `json:"count"`
 	Level    int    `json:"level"`
 	Selected bool   `json:"selected"`
+}
+
+type MapPoint struct {
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Region    string  `json:"region"`
+	Count     int     `json:"count"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type CardTag struct {
@@ -102,6 +112,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 		AvailableTags:    s.engine.Tags(),
 		TagGroups:        s.engine.TagGroups(),
 		MapDistricts:     mapDistricts(results, selectedGovIDs),
+		MapPoints:        mapPoints(results),
 		SourceGroups:     s.sourceGroups(selectedGovIDs),
 		SelectedTagIDs:   strings.Join(selectedTagIDs, ","),
 		SelectedGovIDs:   strings.Join(selectedGovIDs, ","),
@@ -116,6 +127,45 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	if err := s.templates.ExecuteTemplate(w, "index.html", page); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+var sourceCoordinates = map[string][2]float64{
+	"sf": {37.7749, -122.4194}, "contra-costa-county": {37.9161, -121.9977},
+	"san-mateo-county": {37.4337, -122.4014}, "santa-clara-county": {37.3337, -121.8907},
+	"marin-county": {38.0834, -122.7633}, "sonoma-county": {38.5780, -122.9888},
+	"napa-county": {38.5025, -122.2654}, "solano-county": {38.3105, -121.9018},
+	"alameda": {37.7652, -122.2416}, "berkeley": {37.8715, -122.2730},
+	"fremont": {37.5485, -121.9886}, "hayward": {37.6688, -122.0808},
+	"oakland": {37.8044, -122.2712}, "richmond": {37.9358, -122.3477},
+	"mountain-view": {37.3861, -122.0839}, "palo-alto": {37.4419, -122.1430},
+	"san-jose": {37.3382, -121.8863}, "santa-clara": {37.3541, -121.9552},
+	"sunnyvale": {37.3688, -122.0363}, "vallejo": {38.1041, -122.2566},
+}
+
+func mapPoints(results []search_engine.Result) []MapPoint {
+	points := map[string]MapPoint{}
+	for _, result := range results {
+		job := result.Document.Job
+		coordinates, ok := sourceCoordinates[job.SourceID]
+		if !ok {
+			continue
+		}
+		point := points[job.SourceID]
+		point.ID = job.SourceID
+		point.Name = job.SourceName
+		point.Region = job.SourceRegion
+		point.Latitude = coordinates[0]
+		point.Longitude = coordinates[1]
+		point.Count++
+		points[job.SourceID] = point
+	}
+
+	out := make([]MapPoint, 0, len(points))
+	for _, point := range points {
+		out = append(out, point)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
 }
 
 func (s *Server) sourceGroups(selected []string) []SourceGroup {

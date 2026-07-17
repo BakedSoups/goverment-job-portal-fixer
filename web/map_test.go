@@ -65,3 +65,26 @@ func TestMapDistrictsMatchGeoJSONRegions(t *testing.T) {
 		t.Errorf("East Bay metadata = %+v", eastBay)
 	}
 }
+
+func TestMapPointsAggregateMatchingJobsBySource(t *testing.T) {
+	results := []search_engine.Result{
+		{Document: search_engine.Document{Job: jobs.Job{SourceID: "oakland", SourceName: "Oakland", SourceRegion: "East Bay"}}},
+		{Document: search_engine.Document{Job: jobs.Job{SourceID: "oakland", SourceName: "Oakland", SourceRegion: "East Bay"}}},
+		{Document: search_engine.Document{Job: jobs.Job{SourceID: "sf", SourceName: "San Francisco", SourceRegion: "SF"}}},
+		{Document: search_engine.Document{Job: jobs.Job{SourceID: "unknown", SourceName: "Unknown"}}},
+	}
+
+	points := mapPoints(results)
+	if len(points) != 2 {
+		t.Fatalf("got %d map points, want 2", len(points))
+	}
+	if points[0].Name != "Oakland" || points[0].Count != 2 {
+		t.Errorf("Oakland point = %+v", points[0])
+	}
+	if points[1].Name != "San Francisco" || points[1].Count != 1 {
+		t.Errorf("San Francisco point = %+v", points[1])
+	}
+	if points[0].Latitude == 0 || points[0].Longitude == 0 {
+		t.Errorf("Oakland point lacks coordinates: %+v", points[0])
+	}
+}

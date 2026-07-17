@@ -70,8 +70,10 @@ async function initLeafletMap() {
   }
 
   let districts = [];
+  let points = [];
   try {
     districts = JSON.parse(holder.dataset.districts || "[]");
+    points = JSON.parse(holder.dataset.points || "[]");
   } catch {
     showMapError("Map data could not be parsed.");
     return;
@@ -109,10 +111,6 @@ async function initLeafletMap() {
   const regionColor = (id) => {
     return rootStyle.getPropertyValue(`--region-${id}`).trim() || "#667067";
   };
-  const regionOpacity = (level) => {
-    return [0.22, 0.34, 0.46, 0.58, 0.7][level] || 0.22;
-  };
-
   let districtByID = new Map(districts.map((district) => [district.id, district]));
   const districtStyle = (feature) => {
     const district = districtByID.get(feature.properties.id);
@@ -120,7 +118,7 @@ async function initLeafletMap() {
     return {
       color: district && district.selected ? color : "#fffdf8",
       fillColor: color,
-      fillOpacity: regionOpacity(district ? district.level : 0),
+      fillOpacity: 0.38,
       opacity: 0.95,
       weight: district && district.selected ? 4 : 1.5,
     };
@@ -131,16 +129,40 @@ async function initLeafletMap() {
   });
   districtLayer.addTo(map);
 
+  const markerLayer = L.layerGroup().addTo(map);
+  function renderMarkers() {
+    markerLayer.clearLayers();
+    points.forEach((point) => {
+      const count = Number(point.count) || 0;
+      if (count < 1) return;
+      const marker = L.marker([point.latitude, point.longitude], {
+        icon: L.divIcon({
+          className: "job-map-marker-wrap",
+          html: `<span class="job-map-marker"><span>${count.toLocaleString()}</span></span>`,
+          iconSize: [34, 34],
+          iconAnchor: [17, 17],
+        }),
+        title: `${point.name}: ${count} matching ${count === 1 ? "job" : "jobs"}`,
+      });
+      marker.bindPopup(`<strong>${point.name}</strong><br>${count.toLocaleString()} matching ${count === 1 ? "job" : "jobs"}`);
+      marker.addTo(markerLayer);
+    });
+  }
+  renderMarkers();
+
   if (districtLayer.getBounds().isValid()) {
     map.fitBounds(districtLayer.getBounds(), { padding: [20, 20], maxZoom: 9 });
   }
   window.addEventListener("jobs:map-update", (event) => {
     districts = event.detail.districts;
+    points = event.detail.points;
     holder.dataset.districts = JSON.stringify(districts);
+    holder.dataset.points = JSON.stringify(points);
     districtByID = new Map(districts.map((district) => [district.id, district]));
     districtLayer.eachLayer((layer) => {
       districtLayer.resetStyle(layer);
     });
+    renderMarkers();
   });
   window.setTimeout(() => map.invalidateSize(), 0);
   setStatus("");
@@ -395,7 +417,8 @@ function initLiveFilters() {
 
       currentResults.replaceWith(nextResults);
       const districts = JSON.parse(nextMap.dataset.districts || "[]");
-      window.dispatchEvent(new CustomEvent("jobs:map-update", { detail: { districts } }));
+      const points = JSON.parse(nextMap.dataset.points || "[]");
+      window.dispatchEvent(new CustomEvent("jobs:map-update", { detail: { districts, points } }));
       window.history.replaceState({}, "", url);
       document.title = page.title;
       setStatus(`${nextResults.querySelectorAll(".job-card").length} jobs shown`);
