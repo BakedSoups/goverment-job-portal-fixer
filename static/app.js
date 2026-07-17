@@ -5,6 +5,7 @@
     safeInit(initGovernmentPicker, "Government filter");
     safeInit(initLiveFilters, "Live filters");
     safeInit(initSignalHighlights, "Highlights");
+    safeInit(initGitHubStars, "GitHub stars");
   });
 })();
 
@@ -14,6 +15,21 @@ function onReady(callback) {
     return;
   }
   callback();
+}
+
+async function initGitHubStars() {
+  const output = document.querySelector("[data-github-star-count]");
+  if (!output) return;
+
+  const response = await fetch("https://api.github.com/repos/BakedSoups/goverment-job-portal-fixer", {
+    headers: { Accept: "application/vnd.github+json" },
+  });
+  if (!response.ok) return;
+
+  const repository = await response.json();
+  if (!Number.isInteger(repository.stargazers_count)) return;
+  output.textContent = repository.stargazers_count.toLocaleString();
+  output.setAttribute("aria-label", `${repository.stargazers_count.toLocaleString()} GitHub stars`);
 }
 
 function safeInit(init, label) {

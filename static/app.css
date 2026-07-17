@@ -102,8 +102,17 @@ a {
 }
 
 .github-link .icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+}
+
+.github-star-count {
+  min-width: 1.5em;
+  padding-left: 6px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .icon-github {

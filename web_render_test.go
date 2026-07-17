@@ -80,9 +80,13 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if !strings.Contains(page.Body.String(), `href="https://github.com/BakedSoups/goverment-job-portal-fixer"`) {
 		t.Fatal("page header does not link to the GitHub repository")
 	}
-	if !strings.Contains(page.Body.String(), `aria-label="View source on GitHub"`) ||
+	if !strings.Contains(page.Body.String(), `aria-label="Star this project on GitHub"`) ||
 		!strings.Contains(page.Body.String(), `class="icon icon-github"`) {
 		t.Fatal("page header does not render an accessible GitHub icon")
+	}
+	if !strings.Contains(page.Body.String(), `>Star it!</span>`) ||
+		!strings.Contains(page.Body.String(), `data-github-star-count`) {
+		t.Fatal("page header does not render the GitHub star prompt and count")
 	}
 	if !strings.Contains(page.Body.String(), `property="og:image" content="https://osgovjobportal.com/static/social-preview.png"`) ||
 		!strings.Contains(page.Body.String(), `name="twitter:card" content="summary_large_image"`) {
