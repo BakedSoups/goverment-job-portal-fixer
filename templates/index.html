@@ -17,8 +17,9 @@
   <aside class="filter-sidebar" aria-label="Search and filters">
   <section class="search-panel">
   <div class="panel-heading">
-    <p class="eyebrow">Civic job intelligence</p>
-    <h1>Find roles by skills, experience, and real requirements.</h1>
+    <p class="eyebrow">Skills-first government job search</p>
+    <h1>Tell us what you can do. We’ll find government roles that need those skills.</h1>
+    <p>Skip guessing niche job titles. Search with skills, tools, and strengths from your resume or work history.</p>
   </div>
   <form class="search-form tag-search" action="/" method="get" data-tags='{{json .AvailableTags}}'>
     <section class="map-view" aria-labelledby="map-title">
@@ -31,7 +32,7 @@
         <div class="map-status" data-map-status>Loading map...</div>
       </div>
     </section>
-    <label for="tag-input">Search by tags</label>
+    <label for="tag-input">Search by skills, tools, or strengths</label>
     <input type="hidden" name="tags" value="{{.SelectedTagIDs}}" data-tags-value>
     <div class="selected-tags" data-selected-tags>
       {{range .SelectedTags}}
@@ -39,7 +40,7 @@
       {{end}}
     </div>
     <div class="search-row tag-input-row">
-      <input id="tag-input" name="q" value="{{.Query}}" data-tag-input autocomplete="off" placeholder="Type Python, Excel, facilities, nursing, management..." autofocus>
+      <input id="tag-input" name="q" value="{{.Query}}" data-tag-input autocomplete="off" placeholder="Try Python, SQL, Excel, project management, nursing..." autofocus>
       <button type="submit">{{template "icon_search" .}} <span>Search</span></button>
     </div>
     <div class="tag-suggestions" data-tag-suggestions hidden></div>

@@ -22,8 +22,7 @@ function initTheme() {
   if (!button) return;
 
   const saved = window.localStorage.getItem("theme");
-  const preferred = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  let theme = saved === "dark" || saved === "light" ? saved : preferred;
+  let theme = saved === "dark" || saved === "light" ? saved : "light";
 
   function render() {
     document.documentElement.dataset.theme = theme;

@@ -83,6 +83,10 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if !strings.Contains(page.Body.String(), `data-theme-toggle aria-pressed="false"`) {
 		t.Fatal("page header does not render the dark-mode control")
 	}
+	if !strings.Contains(page.Body.String(), "Skip guessing niche job titles") ||
+		!strings.Contains(page.Body.String(), "Search by skills, tools, or strengths") {
+		t.Fatal("search page does not explain the skills-first search model")
+	}
 	if !strings.Contains(page.Body.String(), `class="yoe-range-track" data-yoe-track`) ||
 		!strings.Contains(page.Body.String(), `name="yoe_min"`) ||
 		!strings.Contains(page.Body.String(), `name="yoe_max"`) {
@@ -103,8 +107,8 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if detail.Code != http.StatusOK {
 		t.Fatalf("job detail status = %d, want %d", detail.Code, http.StatusOK)
 	}
-	if !strings.Contains(detail.Body.String(), "Click a signal to find where it was found in the listing.") {
-		t.Fatal("job detail does not explain parsed-signal interaction")
+	if !strings.Contains(detail.Body.String(), "Select a skill or requirement to highlight the evidence in the original listing.") {
+		t.Fatal("job detail does not explain evidence highlighting")
 	}
 	if !strings.Contains(detail.Body.String(), "<strong>Required experience:</strong> not specified") {
 		t.Fatal("job detail does not use the user-facing unspecified experience fallback")

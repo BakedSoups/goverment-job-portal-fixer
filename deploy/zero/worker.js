@@ -201,7 +201,7 @@ function renderJobPage(document, tags) {
     <div class="source-badges"><span class="source-badge source-${escapeAttribute(job.SourceID)}">${escapeHTML(job.SourceName)}</span><span class="source-region">${escapeHTML(job.SourceRegion)}</span></div>
     <h1>${escapeHTML(job.Title)}</h1><div class="meta-grid"><span>${escapeHTML(job.Location)}</span><span>${escapeHTML(job.Employment)}</span><span>${escapeHTML(job.Experience)}</span><span>${formatDate(job.ReleasedDate)}</span><span>${escapeHTML(job.RefNumber)}</span></div>
     <p class="actions"><a class="button" href="${escapeAttribute(job.ApplyURL)}">Apply</a><a class="button secondary" href="${escapeAttribute(job.PostingURL)}">Original listing</a></p></header>
-    <section class="matched-tags"><h2>Parsed Signals</h2><p class="signal-help">Click a signal to find where it was found in the listing.</p><p class="parsed-fact"><strong>Required experience:</strong> ${required}</p><div class="tags signal-tags">${requiredButton}${preferredButton}${signalButtons || "<span>No taxonomy matches yet</span>"}</div></section>${sections}</article>`);
+    <section class="matched-tags"><h2>Skills &amp; requirements found</h2><p class="signal-help">Select a skill or requirement to highlight the evidence in the original listing.</p><p class="parsed-fact"><strong>Required experience:</strong> ${required}</p><div class="tags signal-tags">${requiredButton}${preferredButton}${signalButtons || "<span>No taxonomy matches yet</span>"}</div></section>${sections}</article>`);
 }
 
 function pageShell(title, content) {

@@ -22,7 +22,7 @@ func Concepts() []Concept {
 		{Name: "python", Label: "Python", Category: "IT & Software", Aliases: []string{"python", "python3", "py"}},
 		{Name: "javascript", Label: "JavaScript", Category: "IT & Software", Aliases: []string{"javascript", "js", "node", "node.js", "typescript"}},
 		{Name: "oracle", Label: "Oracle", Category: "IT & Software", Aliases: []string{"oracle", "oracle c2m", "oracle database", "oracle apex", "oracle bpel", "oracle soa"}},
-		{Name: "cloud_infrastructure", Label: "Cloud & Infrastructure", Category: "IT & Software", Aliases: []string{"aws", "azure", "google cloud", "gcp", "cloud", "infrastructure", "disaster recovery", "resilience", "enterprise systems"}},
+		{Name: "cloud_infrastructure", Label: "Cloud Platforms & IT Infrastructure", Category: "IT & Software", Aliases: []string{"aws", "azure", "google cloud", "gcp", "cloud", "cloud computing", "cloud platform", "cloud infrastructure", "it infrastructure", "network infrastructure", "systems infrastructure", "infrastructure as code", "iac", "terraform", "kubernetes", "disaster recovery", "infrastructure", "resilience"}},
 		{Name: "enterprise_architecture", Label: "Enterprise Architecture", Category: "IT & Software", Aliases: []string{"enterprise architect", "solutions architect", "solution architect", "architecture", "systems architecture"}},
 		{Name: "project_management", Label: "Project Management", Category: "IT & Software", Aliases: []string{"project manager", "project management", "it project manager", "modernization project", "project lead"}},
 

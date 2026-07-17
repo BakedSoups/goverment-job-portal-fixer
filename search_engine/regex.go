@@ -49,13 +49,16 @@ func isQueryOnlyAlias(alias string) bool {
 	case "administration",
 		"administrative",
 		"analytics",
+		"architecture",
 		"budget",
 		"finance",
+		"infrastructure",
 		"leadership",
 		"management",
 		"manager",
 		"operations",
-		"programs":
+		"programs",
+		"resilience":
 		return true
 	default:
 		return false

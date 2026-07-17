@@ -1,6 +1,6 @@
 # Bay Area Gov Jobs
 
-Bay Area Gov Jobs is a free, server-rendered search tool for public-sector jobs around the Bay Area.
+Bay Area Gov Jobs is a free, server-rendered search tool for public-sector jobs around the Bay Area. Instead of requiring people to know a government's niche job titles, it lets them search with skills, tools, experience, and strengths they already have.
 
 I tried applying to the City and County of San Francisco to see what software engineers can do in government, but found the existing job portal difficult to navigate. I built this tool to make the listings easier to search and compare. It became useful enough that I made the source public and the website free to use.
 
