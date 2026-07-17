@@ -74,14 +74,14 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if !strings.Contains(page.Body.String(), `data-live-status aria-live="polite"`) {
 		t.Fatal("filter form does not include an accessible live-update status")
 	}
-	if !strings.Contains(page.Body.String(), "Job information provided through public APIs") {
-		t.Fatal("page header does not disclose the public API data source")
+	if !strings.Contains(page.Body.String(), "Job information via public APIs · Refreshes daily at 12:17 UTC") {
+		t.Fatal("page header does not disclose the public API source and refresh schedule")
 	}
 	if !strings.Contains(page.Body.String(), `href="https://github.com/BakedSoups/goverment-job-portal-fixer"`) {
 		t.Fatal("page header does not link to the GitHub repository")
 	}
-	if !strings.Contains(page.Body.String(), `data-theme-toggle aria-pressed="false"`) {
-		t.Fatal("page header does not render the dark-mode control")
+	if strings.Contains(page.Body.String(), "theme-toggle") || strings.Contains(page.Body.String(), "Dark mode") {
+		t.Fatal("page header still renders the removed dark-mode control")
 	}
 	if !strings.Contains(page.Body.String(), "Enter your skills, tools, or strengths") ||
 		!strings.Contains(page.Body.String(), "Search by skills, tools, or strengths") {

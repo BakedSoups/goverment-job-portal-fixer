@@ -22,21 +22,6 @@
   --heading-font: "Times New Roman", Times, serif;
 }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #111512;
-  --surface: #191e1a;
-  --surface-muted: #202822;
-  --ink: #edf2ed;
-  --muted: #aeb9b0;
-  --line: #39433b;
-  --line-strong: #59665c;
-  --accent: #3b9a72;
-  --accent-dark: #8bd2b2;
-  --tag: #263a30;
-  --shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -119,20 +104,6 @@ a {
 .github-link .icon {
   width: 16px;
   height: 16px;
-}
-
-.theme-toggle {
-  min-height: 34px;
-  padding: 0 11px;
-  color: var(--accent-dark);
-  border-color: var(--line-strong);
-  background: var(--surface);
-  font-size: 13px;
-}
-
-.theme-toggle:hover {
-  color: var(--surface);
-  background: var(--accent-dark);
 }
 
 main {
@@ -508,26 +479,6 @@ main {
   color: var(--muted);
   font-weight: 800;
   text-align: right;
-}
-
-:root[data-theme="dark"] body {
-  background:
-    linear-gradient(180deg, rgba(32, 40, 34, 0.8), rgba(17, 21, 18, 0) 300px),
-    var(--bg);
-}
-
-:root[data-theme="dark"] .topbar,
-:root[data-theme="dark"] input,
-:root[data-theme="dark"] select,
-:root[data-theme="dark"] .government-picker,
-:root[data-theme="dark"] .government-group,
-:root[data-theme="dark"] .tag-group {
-  background-color: var(--surface);
-  color: var(--ink);
-}
-
-:root[data-theme="dark"] .leaflet-tile-pane {
-  filter: brightness(0.72) saturate(0.75);
 }
 
 .government-filter {

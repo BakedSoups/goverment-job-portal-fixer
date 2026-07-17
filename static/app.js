@@ -1,6 +1,5 @@
 (function () {
   onReady(() => {
-    safeInit(initTheme, "Theme");
     safeInit(initLeafletMap, "Map");
     safeInit(initTagSearch, "Search");
     safeInit(initGovernmentPicker, "Government filter");
@@ -15,27 +14,6 @@ function onReady(callback) {
     return;
   }
   callback();
-}
-
-function initTheme() {
-  const button = document.querySelector("[data-theme-toggle]");
-  if (!button) return;
-
-  const saved = window.localStorage.getItem("theme");
-  let theme = saved === "dark" || saved === "light" ? saved : "light";
-
-  function render() {
-    document.documentElement.dataset.theme = theme;
-    button.setAttribute("aria-pressed", String(theme === "dark"));
-    button.textContent = theme === "dark" ? "Light mode" : "Dark mode";
-  }
-
-  button.addEventListener("click", () => {
-    theme = theme === "dark" ? "light" : "dark";
-    window.localStorage.setItem("theme", theme);
-    render();
-  });
-  render();
 }
 
 function safeInit(init, label) {

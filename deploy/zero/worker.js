@@ -205,7 +205,7 @@ function renderJobPage(document, tags) {
 }
 
 function pageShell(title, content) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)}</title><link rel="stylesheet" href="/static/app.css"><script src="/static/app.js" defer></script></head><body><header class="topbar"><a class="brand" href="/"><span>Bay Area Gov Jobs</span></a><div class="topbar-actions"><span class="topbar-meta">Job information provided through public APIs</span><button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Dark mode</button><a class="github-link" href="https://github.com/BakedSoups/goverment-job-portal-fixer" target="_blank" rel="noopener noreferrer">GitHub</a></div></header><main>${content}</main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)}</title><link rel="stylesheet" href="/static/app.css"><script src="/static/app.js" defer></script></head><body><header class="topbar"><a class="brand" href="/"><span>Bay Area Gov Jobs</span></a><div class="topbar-actions"><span class="topbar-meta">Job information via public APIs · Refreshes daily at 12:17 UTC</span><a class="github-link" href="https://github.com/BakedSoups/goverment-job-portal-fixer" target="_blank" rel="noopener noreferrer">GitHub</a></div></header><main>${content}</main></body></html>`;
 }
 
 function splitValues(values) {
