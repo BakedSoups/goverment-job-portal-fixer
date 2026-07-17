@@ -83,7 +83,7 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if !strings.Contains(page.Body.String(), `data-theme-toggle aria-pressed="false"`) {
 		t.Fatal("page header does not render the dark-mode control")
 	}
-	if !strings.Contains(page.Body.String(), "Skip guessing niche job titles") ||
+	if !strings.Contains(page.Body.String(), "Enter your skills, tools, or strengths") ||
 		!strings.Contains(page.Body.String(), "Search by skills, tools, or strengths") {
 		t.Fatal("search page does not explain the skills-first search model")
 	}
