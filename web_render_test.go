@@ -84,6 +84,10 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 		!strings.Contains(page.Body.String(), `class="icon icon-github"`) {
 		t.Fatal("page header does not render an accessible GitHub icon")
 	}
+	if !strings.Contains(page.Body.String(), `property="og:image" content="https://osgovjobportal.com/static/social-preview.png"`) ||
+		!strings.Contains(page.Body.String(), `name="twitter:card" content="summary_large_image"`) {
+		t.Fatal("page does not render social preview metadata")
+	}
 	if strings.Contains(page.Body.String(), "theme-toggle") || strings.Contains(page.Body.String(), "Dark mode") {
 		t.Fatal("page header still renders the removed dark-mode control")
 	}

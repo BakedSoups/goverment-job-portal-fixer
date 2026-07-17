@@ -20,6 +20,7 @@ const assetPaths = [
   ["/data/jobs.json", resolve(snapshotPath)],
   ["/static/app.css", resolve(root, "static/app.css")],
   ["/static/app.js", resolve(root, "static/app.js")],
+  ["/static/social-preview.png", resolve(root, "static/social-preview.png")],
   ["/static/data/bay-area-regions.geojson", resolve(root, "static/data/bay-area-regions.geojson")],
   ["/static/vendor/leaflet/leaflet.css", resolve(root, "static/vendor/leaflet/leaflet.css")],
   ["/static/vendor/leaflet/leaflet.js", resolve(root, "static/vendor/leaflet/leaflet.js")],
