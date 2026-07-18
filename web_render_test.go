@@ -95,7 +95,11 @@ func TestMapRendersWithGeoJSONAsset(t *testing.T) {
 	if strings.Contains(page.Body.String(), "theme-toggle") || strings.Contains(page.Body.String(), "Dark mode") {
 		t.Fatal("page header still renders the removed dark-mode control")
 	}
-	if !strings.Contains(page.Body.String(), "Enter your skills, tools, or strengths") ||
+	if !strings.Contains(page.Body.String(), `type="module" src="/static/analytics.js`) ||
+		!strings.Contains(page.Body.String(), `data-analytics-event="job_opened"`) {
+		t.Fatal("page does not load PostHog analytics or mark job-open events")
+	}
+	if !strings.Contains(page.Body.String(), "Find roles using your skills and tools first") ||
 		!strings.Contains(page.Body.String(), "Search by skills, tools, or strengths") {
 		t.Fatal("search page does not explain the skills-first search model")
 	}

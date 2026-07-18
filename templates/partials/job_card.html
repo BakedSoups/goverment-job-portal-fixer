@@ -6,7 +6,7 @@
       <span class="source-badge source-{{.Document.Job.SourceID}}">{{.Document.Job.SourceName}}</span>
       {{if .Document.Job.SourceRegion}}<span class="source-region">{{.Document.Job.SourceRegion}}</span>{{end}}
     </div>
-    <h2><a href="/jobs/{{.Document.Job.ID}}{{.SearchParams}}">{{.Document.Job.Title}}</a></h2>
+    <h2><a href="/jobs/{{.Document.Job.ID}}{{.SearchParams}}" data-analytics-event="job_opened" data-analytics-source="{{.Document.Job.SourceName}}" data-analytics-region="{{.Document.Job.SourceRegion}}">{{.Document.Job.Title}}</a></h2>
     <p class="summary">
       <span>{{template "icon_map_pin" .}}{{.Document.Job.Location}}</span>
       <span>{{template "icon_briefcase" .}}{{.Document.Job.Employment}}</span>

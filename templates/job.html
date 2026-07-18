@@ -19,8 +19,8 @@
       {{if .Document.Job.SalaryMin}}<span>{{money .Document.Job.SalaryMin}} - {{money .Document.Job.SalaryMax}}</span>{{end}}
     </div>
     <p class="actions">
-      <a class="button" href="{{.Document.Job.ApplyURL}}">{{template "icon_external" .}} <span>Apply</span></a>
-      <a class="button secondary" href="{{.Document.Job.PostingURL}}">Original listing</a>
+      <a class="button" href="{{.Document.Job.ApplyURL}}" data-analytics-event="apply_clicked" data-analytics-source="{{.Document.Job.SourceName}}" data-analytics-region="{{.Document.Job.SourceRegion}}">{{template "icon_external" .}} <span>Apply</span></a>
+      <a class="button secondary" href="{{.Document.Job.PostingURL}}" data-analytics-event="original_listing_clicked" data-analytics-source="{{.Document.Job.SourceName}}" data-analytics-region="{{.Document.Job.SourceRegion}}">Original listing</a>
     </p>
   </header>
 

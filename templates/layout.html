@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="/static/app.css?v=20260717-light-only-1">
   <script src="/static/vendor/leaflet/leaflet.js?v=leaflet-1.9.4" defer></script>
   <script src="/static/app.js?v=20260717-light-only-1" defer></script>
+  <script type="module" src="/static/analytics.js?v=posthog-1.404.1"></script>
 </head>
 <body>
   <header class="topbar">
@@ -33,7 +34,7 @@
     </a>
     <div class="topbar-actions">
       <span class="topbar-meta">Job information via public APIs · Refreshes daily at 12:17 UTC</span>
-      <a class="github-link" href="https://github.com/BakedSoups/goverment-job-portal-fixer" target="_blank" rel="noopener noreferrer" aria-label="Star this project on GitHub" title="Star this project on GitHub">
+      <a class="github-link" href="https://github.com/BakedSoups/goverment-job-portal-fixer" target="_blank" rel="noopener noreferrer" aria-label="Star this project on GitHub" title="Star this project on GitHub" data-analytics-event="github_star_clicked">
         {{template "icon_github" .}}
         <span>Star it!</span>
         <span class="github-star-count" data-github-star-count aria-label="GitHub stars">…</span>
